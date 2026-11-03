@@ -35,4 +35,15 @@ install(DIRECTORY python/${PROJECT_NAME}_msg/
         PATTERN "*.pyc" EXCLUDE
 )
 
+if (BUILD_TESTING)
+    find_package(ament_cmake_gtest REQUIRED)
+    find_package(ament_cmake_pytest REQUIRED)
+    ament_add_gtest(test_ros_msg_helpers test/test_ros_msg_helpers.cpp)
+    target_include_directories(test_ros_msg_helpers PRIVATE include)
+    target_link_libraries(test_ros_msg_helpers
+            ${PROJECT_NAME}__rosidl_typesupport_cpp
+    )
+    ament_add_pytest_test(test_interface_contract test/test_interface_contract.py)
+endif ()
+
 ament_package()
