@@ -24,4 +24,15 @@ rosidl_generate_interfaces(${PROJECT_NAME}
         std_msgs
 )
 
+install(DIRECTORY include/${PROJECT_NAME}/
+        DESTINATION include/${PROJECT_NAME}/${PROJECT_NAME}
+)
+ament_export_include_directories(include/${PROJECT_NAME})
+
+install(DIRECTORY python/${PROJECT_NAME}_msg/
+        DESTINATION ${PYTHON_INSTALL_DIR}/${PROJECT_NAME}_msg
+        PATTERN "__pycache__" EXCLUDE
+        PATTERN "*.pyc" EXCLUDE
+)
+
 ament_package()

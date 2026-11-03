@@ -1,0 +1,122 @@
+#pragma once
+
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+
+#include "audio_io_interface/action/play_clip.hpp"
+#include "audio_io_interface/msg/audio_clip.hpp"
+#include "audio_io_interface/msg/audio_event.hpp"
+#include "audio_io_interface/msg/audio_state.hpp"
+#include "audio_io_interface/msg/audio_stream.hpp"
+#include "audio_io_interface/srv/set_volume.hpp"
+#include "audio_io_interface/srv/stop_audio.hpp"
+
+namespace audio_io_interface {
+
+    namespace detail {
+
+        /// 判断字符是否为 ROS 名称中不允许出现的 ASCII 空白。
+        [[nodiscard]] constexpr bool is_ascii_whitespace(const char character) noexcept {
+            return character == ' ' || (character >= '\t' && character <= '\r');
+        }
+
+        /// 判断字符串是否为空或只包含 ASCII 空白。
+        [[nodiscard]] inline bool is_empty_or_ascii_whitespace(const std::string_view value) noexcept {
+            return value.empty() || std::all_of(value.begin(), value.end(), is_ascii_whitespace);
+        }
+
+        /// 默认 audio_io 节点全名，与文档中的 /audio/io 一致。
+        inline constexpr std::string_view kDefaultNodeFqn = "/audio/io";
+
+        /// 校验节点全名：必须是非根绝对名称，不能包含 ASCII 空白或中间的空路径段。
+        inline void require_node_fqn(const std::string_view node_fqn) {
+            if (node_fqn.empty() || node_fqn.front() != '/' || node_fqn == "/" ||
+                node_fqn.find("//") != std::string_view::npos ||
+                node_fqn.find_first_of(" \t\n\r\v\f") != std::string_view::npos) {
+                throw std::invalid_argument(
+                    "node_fqn must be an absolute, non-root ROS name without ASCII whitespace");
+            }
+        }
+
+        /// 去掉尾部多余的 '/'，保留开头的绝对路径。
+        [[nodiscard]] inline std::string normalized_node_fqn(const std::string_view node_fqn) {
+            require_node_fqn(node_fqn);
+            auto normalized = node_fqn;
+            while (normalized.size() > 1 && normalized.back() == '/') {
+                normalized.remove_suffix(1);
+            }
+            return std::string{normalized};
+        }
+
+        /// 拼接节点全名与 endpoint 后缀。
+        [[nodiscard]] inline std::string endpoint_name(const std::string_view node_fqn,
+                                                       const std::string_view endpoint_suffix) {
+            return normalized_node_fqn(node_fqn) + "/" + std::string{endpoint_suffix};
+        }
+
+    } // namespace detail
+
+    /// 默认 audio_io 节点全名。
+    inline constexpr std::string_view kDefaultNodeFqn = detail::kDefaultNodeFqn;
+
+    /// endpoint owner（audio_io 节点自身）创建 publisher/subscriber/service/action 时使用的私有名称。
+    inline constexpr std::string_view kPrivateTopicPlay = "~/play";
+    inline constexpr std::string_view kPrivateTopicStream = "~/stream";
+    inline constexpr std::string_view kPrivateTopicCapture = "~/capture";
+    inline constexpr std::string_view kPrivateTopicState = "~/state";
+    inline constexpr std::string_view kPrivateTopicEvent = "~/event";
+    inline constexpr std::string_view kPrivateActionPlayClip = "~/play_clip";
+    inline constexpr std::string_view kPrivateServiceStop = "~/stop";
+    inline constexpr std::string_view kPrivateServiceSetVolume = "~/set_volume";
+
+    /// 外部消费者使用的绝对话题名称。
+    /// @param node_fqn audio_io 节点全名，默认 /audio/io
+    [[nodiscard]] inline std::string topic_play(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
+        return detail::endpoint_name(node_fqn, "play");
+    }
+
+    [[nodiscard]] inline std::string topic_stream(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
+        return detail::endpoint_name(node_fqn, "stream");
+    }
+
+    [[nodiscard]] inline std::string topic_capture(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
+        return detail::endpoint_name(node_fqn, "capture");
+    }
+
+    [[nodiscard]] inline std::string topic_state(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
+        return detail::endpoint_name(node_fqn, "state");
+    }
+
+    [[nodiscard]] inline std::string topic_event(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
+        return detail::endpoint_name(node_fqn, "event");
+    }
+
+    /// 外部消费者使用的绝对动作名称。
+    [[nodiscard]] inline std::string action_play_clip(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
+        return detail::endpoint_name(node_fqn, "play_clip");
+    }
+
+    /// 外部消费者使用的绝对服务名称。
+    [[nodiscard]] inline std::string service_stop(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
+        return detail::endpoint_name(node_fqn, "stop");
+    }
+
+    [[nodiscard]] inline std::string service_set_volume(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
+        return detail::endpoint_name(node_fqn, "set_volume");
+    }
+
+    // 与生成消息/服务/动作名称一致的简洁类型别名。
+    using MsgAudioClip = audio_io_interface::msg::AudioClip;
+    using MsgAudioStream = audio_io_interface::msg::AudioStream;
+    using MsgAudioState = audio_io_interface::msg::AudioState;
+    using MsgAudioEvent = audio_io_interface::msg::AudioEvent;
+    using SrvStopAudio = audio_io_interface::srv::StopAudio;
+    using SrvSetVolume = audio_io_interface::srv::SetVolume;
+    using ActionPlayClip = audio_io_interface::action::PlayClip;
+    using ActionPlayClipGoal = ActionPlayClip::Goal;
+    using ActionPlayClipResult = ActionPlayClip::Result;
+    using ActionPlayClipFeedback = ActionPlayClip::Feedback;
+
+} // namespace audio_io_interface
