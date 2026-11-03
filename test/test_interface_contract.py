@@ -135,7 +135,7 @@ def test_python_endpoint_helpers() -> None:
     """Python helper 必须区分私有名称与目标节点 FQN。"""
     ros_msg = load_ros_msg()
 
-    assert ros_msg.DEFAULT_NODE_FQN == "/audio/io"
+    assert ros_msg.DEFAULT_NODE_FQN == "/audio_io"
     assert ros_msg.PRIVATE_TOPIC_PLAY == "~/play"
     assert ros_msg.PRIVATE_TOPIC_STREAM == "~/stream"
     assert ros_msg.PRIVATE_TOPIC_CAPTURE == "~/capture"
@@ -145,23 +145,23 @@ def test_python_endpoint_helpers() -> None:
     assert ros_msg.PRIVATE_SERVICE_STOP == "~/stop"
     assert ros_msg.PRIVATE_SERVICE_SET_VOLUME == "~/set_volume"
 
-    assert ros_msg.topic_play() == "/audio/io/play"
-    assert ros_msg.topic_stream() == "/audio/io/stream"
-    assert ros_msg.topic_capture() == "/audio/io/capture"
-    assert ros_msg.topic_state() == "/audio/io/state"
-    assert ros_msg.topic_event() == "/audio/io/event"
-    assert ros_msg.action_play_clip() == "/audio/io/play_clip"
-    assert ros_msg.service_stop() == "/audio/io/stop"
-    assert ros_msg.service_set_volume() == "/audio/io/set_volume"
+    assert ros_msg.topic_play() == "/audio_io/play"
+    assert ros_msg.topic_stream() == "/audio_io/stream"
+    assert ros_msg.topic_capture() == "/audio_io/capture"
+    assert ros_msg.topic_state() == "/audio_io/state"
+    assert ros_msg.topic_event() == "/audio_io/event"
+    assert ros_msg.action_play_clip() == "/audio_io/play_clip"
+    assert ros_msg.service_stop() == "/audio_io/stop"
+    assert ros_msg.service_set_volume() == "/audio_io/set_volume"
 
-    assert ros_msg.topic_play("/robot_a/audio/io") == "/robot_a/audio/io/play"
-    assert ros_msg.topic_play("/robot_a/audio/io///") == "/robot_a/audio/io/play"
+    assert ros_msg.topic_play("/robot_a/audio_io") == "/robot_a/audio_io/play"
+    assert ros_msg.topic_play("/robot_a/audio_io///") == "/robot_a/audio_io/play"
 
 
 def test_python_endpoint_helpers_reject_invalid_node_fqn() -> None:
     """Python helper 必须拒绝空、相对、根路径与含空白的节点名。"""
     ros_msg = load_ros_msg()
-    for invalid in ("", "audio/io", "/", "/audio//io", "/audio/io\t"):
+    for invalid in ("", "audio/io", "/", "/audio//io", "/audio_io\t"):
         with pytest.raises(ValueError, match="node_fqn"):
             ros_msg.topic_play(invalid)
 

@@ -7,7 +7,7 @@
 
 namespace {
 
-constexpr std::string_view kRobotNodeFqn = "/robot_a/audio/io";
+constexpr std::string_view kRobotNodeFqn = "/robot_a/audio_io";
 
 TEST(RosMsgHelpers, ProvidesPrivateEndpointOwnerNames) {
     EXPECT_EQ(audio_io_interface::kPrivateTopicPlay, "~/play");
@@ -21,27 +21,27 @@ TEST(RosMsgHelpers, ProvidesPrivateEndpointOwnerNames) {
 }
 
 TEST(RosMsgHelpers, BuildsDefaultAbsoluteEndpointNames) {
-    EXPECT_EQ(audio_io_interface::topic_play(), "/audio/io/play");
-    EXPECT_EQ(audio_io_interface::topic_stream(), "/audio/io/stream");
-    EXPECT_EQ(audio_io_interface::topic_capture(), "/audio/io/capture");
-    EXPECT_EQ(audio_io_interface::topic_state(), "/audio/io/state");
-    EXPECT_EQ(audio_io_interface::topic_event(), "/audio/io/event");
-    EXPECT_EQ(audio_io_interface::action_play_clip(), "/audio/io/play_clip");
-    EXPECT_EQ(audio_io_interface::service_stop(), "/audio/io/stop");
-    EXPECT_EQ(audio_io_interface::service_set_volume(), "/audio/io/set_volume");
+    EXPECT_EQ(audio_io_interface::topic_play(), "/audio_io/play");
+    EXPECT_EQ(audio_io_interface::topic_stream(), "/audio_io/stream");
+    EXPECT_EQ(audio_io_interface::topic_capture(), "/audio_io/capture");
+    EXPECT_EQ(audio_io_interface::topic_state(), "/audio_io/state");
+    EXPECT_EQ(audio_io_interface::topic_event(), "/audio_io/event");
+    EXPECT_EQ(audio_io_interface::action_play_clip(), "/audio_io/play_clip");
+    EXPECT_EQ(audio_io_interface::service_stop(), "/audio_io/stop");
+    EXPECT_EQ(audio_io_interface::service_set_volume(), "/audio_io/set_volume");
 }
 
 TEST(RosMsgHelpers, BuildsNamesForCustomNodeFqn) {
     EXPECT_EQ(audio_io_interface::topic_play(kRobotNodeFqn),
-              "/robot_a/audio/io/play");
+              "/robot_a/audio_io/play");
     EXPECT_EQ(audio_io_interface::topic_stream(kRobotNodeFqn),
-              "/robot_a/audio/io/stream");
+              "/robot_a/audio_io/stream");
     EXPECT_EQ(audio_io_interface::action_play_clip(kRobotNodeFqn),
-              "/robot_a/audio/io/play_clip");
+              "/robot_a/audio_io/play_clip");
     EXPECT_EQ(audio_io_interface::service_set_volume(kRobotNodeFqn),
-              "/robot_a/audio/io/set_volume");
+              "/robot_a/audio_io/set_volume");
     EXPECT_EQ(audio_io_interface::topic_play(std::string{kRobotNodeFqn} + "///"),
-              "/robot_a/audio/io/play");
+              "/robot_a/audio_io/play");
 }
 
 TEST(RosMsgHelpers, RejectsInvalidNodeFqn) {
@@ -53,7 +53,7 @@ TEST(RosMsgHelpers, RejectsInvalidNodeFqn) {
                  std::invalid_argument);
     EXPECT_THROW(static_cast<void>(audio_io_interface::topic_play("/audio//io")),
                  std::invalid_argument);
-    EXPECT_THROW(static_cast<void>(audio_io_interface::topic_play("/audio/io\t")),
+    EXPECT_THROW(static_cast<void>(audio_io_interface::topic_play("/audio_io\t")),
                  std::invalid_argument);
 }
 

@@ -27,8 +27,8 @@ namespace audio_io_interface {
             return value.empty() || std::all_of(value.begin(), value.end(), is_ascii_whitespace);
         }
 
-        /// 默认 audio_io 节点全名，与文档中的 /audio/io 一致。
-        inline constexpr std::string_view kDefaultNodeFqn = "/audio/io";
+        /// 默认 audio_io 节点全名。
+        inline constexpr std::string_view kDefaultNodeFqn = "/audio_io";
 
         /// 去掉尾部多余的 '/'，保留开头的绝对路径。
         [[nodiscard]] inline std::string_view trim_trailing_slashes(std::string_view node_fqn) {
@@ -77,7 +77,7 @@ namespace audio_io_interface {
     inline constexpr std::string_view kPrivateServiceSetVolume = "~/set_volume";
 
     /// 外部消费者使用的绝对话题名称。
-    /// @param node_fqn audio_io 节点全名，默认 /audio/io
+    /// @param node_fqn audio_io 节点全名，默认 /audio_io
     [[nodiscard]] inline std::string topic_play(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
         return detail::endpoint_name(node_fqn, "play");
     }

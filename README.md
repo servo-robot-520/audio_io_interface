@@ -2,7 +2,7 @@
 
 ## 简介
 
-`audio_io_interface` 定义 ROS 2 音频 I/O 节点（`/audio/io`）使用的通用消息、服务和动作：
+`audio_io_interface` 定义 ROS 2 音频 I/O 节点（`/audio_io`）使用的通用消息、服务和动作：
 
 - 播放任意音频片段（`AudioClip`）；
 - 播放实时 PCM 流（`AudioStream`）；
@@ -21,7 +21,7 @@
 - `~/...` 是 ROS 2 **endpoint owner 私有名称**，只能由创建该 publisher/subscriber/service/action 的 `audio_io` 节点使用；它会相对创建者自身的节点名展开。
 - GUI、App、其他业务节点必须把目标 `audio_io` 节点的完整节点名（FQN）传给 helper，由 helper 生成绝对 endpoint 名称。外部节点若自行使用 `~/...`，它会指向外部节点自身。
 
-默认节点 FQN 为 `/audio/io`。
+默认节点 FQN 为 `/audio_io`。
 
 | 类型 | owner 私有名称 | 外部消费者 helper |
 | --- | --- | --- |
@@ -36,17 +36,17 @@
 
 `node_fqn` 必须是非根绝对 ROS 名称，不能包含 ASCII 空白或中间的空路径段；尾部多余 `/` 会自动移除。
 
-例如目标节点是 `/robot_a/audio/io` 时：
+例如目标节点是 `/robot_a/audio_io` 时：
 
 ```text
-/robot_a/audio/io/play
-/robot_a/audio/io/stream
-/robot_a/audio/io/capture
-/robot_a/audio/io/state
-/robot_a/audio/io/event
-/robot_a/audio/io/play_clip
-/robot_a/audio/io/stop
-/robot_a/audio/io/set_volume
+/robot_a/audio_io/play
+/robot_a/audio_io/stream
+/robot_a/audio_io/capture
+/robot_a/audio_io/state
+/robot_a/audio_io/event
+/robot_a/audio_io/play_clip
+/robot_a/audio_io/stop
+/robot_a/audio_io/set_volume
 ```
 
 ## 消息
@@ -102,13 +102,13 @@ uint8[] data
 外部节点通过 helper 获取绝对名称：
 
 ```cpp
-const auto capture_topic = audio_io_interface::topic_capture("/robot_a/audio/io");
+const auto capture_topic = audio_io_interface::topic_capture("/robot_a/audio_io");
 ```
 
 ```python
 from audio_io_interface_msg.ros_msg import topic_capture
 
-print(topic_capture("/robot_a/audio/io"))  # /robot_a/audio/io/capture
+print(topic_capture("/robot_a/audio_io"))  # /robot_a/audio_io/capture
 ```
 
 ### `AudioState`
@@ -193,7 +193,7 @@ float32 progress
 const auto private_play = audio_io_interface::kPrivateTopicPlay;
 
 // 外部节点必须给出目标 audio_io 的节点全名。
-constexpr std::string_view audio_io_fqn = "/robot_a/audio/io";
+constexpr std::string_view audio_io_fqn = "/robot_a/audio_io";
 const auto play_topic = audio_io_interface::topic_play(audio_io_fqn);
 const auto stop_service = audio_io_interface::service_stop(audio_io_fqn);
 const auto play_action = audio_io_interface::action_play_clip(audio_io_fqn);
@@ -224,10 +224,10 @@ from audio_io_interface_msg.ros_msg import (
     topic_play,
 )
 
-audio_io_fqn = "/robot_a/audio/io"
+audio_io_fqn = "/robot_a/audio_io"
 print(PRIVATE_TOPIC_PLAY)          # ~/play
-print(topic_play(audio_io_fqn))    # /robot_a/audio/io/play
-print(service_stop(audio_io_fqn))  # /robot_a/audio/io/stop
+print(topic_play(audio_io_fqn))    # /robot_a/audio_io/play
+print(service_stop(audio_io_fqn))  # /robot_a/audio_io/stop
 print(action_play_clip(audio_io_fqn))
 ```
 
@@ -251,7 +251,7 @@ colcon test-result --test-result-base build/audio_io_interface/test_results --ve
 
 ## 与设计文档的对应
 
-本包对应 [`docs/microduck-audio-architecture.zh-CN.md`](../../docs/microduck-audio-architecture.zh-CN.md) 中 `/audio/io` 的通用接口：
+本包提供音频 I/O 的通用接口；当前默认节点全名为 `/audio_io`。设计文档中的 `/audio/io` 对应同一组接口，部署时以实际节点 FQN 为准。
 
 | 文档中的接口 | 本包中的类型 |
 | --- | --- |

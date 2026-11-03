@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-DEFAULT_NODE_FQN = "/audio/io"
+DEFAULT_NODE_FQN = "/audio_io"
 
 # 下列私有名称仅供 endpoint owner（audio_io 节点自身）创建 endpoint 时使用。
 PRIVATE_TOPIC_PLAY = "~/play"
