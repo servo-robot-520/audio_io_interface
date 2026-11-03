@@ -69,19 +69,7 @@ float64 start_offset
 float64 duration
 ```
 
-常量：
-
-| 常量 | 值 | 含义 |
-| --- | --- | --- |
-| `PRIORITY_IDLE` | 0 | 空闲 |
-| `PRIORITY_AMBIENT` | 1 | 环境音 |
-| `PRIORITY_SPEECH` | 2 | TTS/语音 |
-| `PRIORITY_INTERACTION` | 3 | 交互音效 |
-| `PRIORITY_ALERT` | 4 | 警报 |
-| `POLICY_QUEUE` | 0 | 排队 |
-| `POLICY_PREEMPT` | 1 | 抢占 |
-| `POLICY_MIX` | 2 | 混音 |
-| `POLICY_REPLACE_SAME_GROUP` | 3 | 替换同组 |
+优先级与策略常量的取值和含义以 `msg/AudioClip.msg` 内的注释为准，README 不再重复维护。
 
 ### `AudioStream`
 
@@ -141,7 +129,7 @@ bool capture_ok
 string capture_error
 ```
 
-`state` 取值：`idle`、`playing`、`degraded`、`error`。
+`state` 的取值与含义以 `msg/AudioState.msg` 内的注释为准。
 
 ### `AudioEvent`
 
@@ -154,18 +142,7 @@ uint8 event
 string detail
 ```
 
-常量：
-
-| 常量 | 值 |
-| --- | --- |
-| `EVENT_STARTED` | 0 |
-| `EVENT_FINISHED` | 1 |
-| `EVENT_FAILED` | 2 |
-| `EVENT_PREEMPTED` | 3 |
-| `EVENT_UNDERRUN` | 4 |
-| `EVENT_DECODE_FAILED` | 5 |
-| `EVENT_DEVICE_LOST` | 6 |
-| `EVENT_DEVICE_RECOVERED` | 7 |
+事件类型常量的取值和含义以 `msg/AudioEvent.msg` 内的注释为准，README 不再重复维护。
 
 ## 服务
 

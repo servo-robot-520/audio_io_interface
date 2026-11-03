@@ -2,16 +2,25 @@
 # uri 支持 file://、package://；http(s):// 是否可用由 audio_io 配置决定。
 
 # 音频焦点优先级，数值越大越优先。
+# 空闲：最低优先级，通常只用于测试或占位。
 uint8 PRIORITY_IDLE=0
+# 环境音：背景氛围、低优先级提示。
 uint8 PRIORITY_AMBIENT=1
+# 语音：TTS 与语音播报。
 uint8 PRIORITY_SPEECH=2
+# 交互音效：按键、动作反馈等。
 uint8 PRIORITY_INTERACTION=3
+# 警报：最高优先级，可抢占其他播放源。
 uint8 PRIORITY_ALERT=4
 
 # 与当前播放源冲突时的处理策略。
+# 排队：等待当前播放源结束后再播放。
 uint8 POLICY_QUEUE=0
+# 抢占：停止低优先级或同优先级的播放源，立即播放。
 uint8 POLICY_PREEMPT=1
+# 混音：与当前播放源同时播放，并按优先级 ducking。
 uint8 POLICY_MIX=2
+# 替换同组：只停止同一 group 的播放源，再播放。
 uint8 POLICY_REPLACE_SAME_GROUP=3
 
 # 时间戳与 frame_id；frame_id 可留空。
