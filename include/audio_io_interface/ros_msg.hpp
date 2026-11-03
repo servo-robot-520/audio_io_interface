@@ -30,8 +30,17 @@ namespace audio_io_interface {
         /// 默认 audio_io 节点全名，与文档中的 /audio/io 一致。
         inline constexpr std::string_view kDefaultNodeFqn = "/audio/io";
 
+        /// 去掉尾部多余的 '/'，保留开头的绝对路径。
+        [[nodiscard]] inline std::string_view trim_trailing_slashes(std::string_view node_fqn) {
+            while (node_fqn.size() > 1 && node_fqn.back() == '/') {
+                node_fqn.remove_suffix(1);
+            }
+            return node_fqn;
+        }
+
         /// 校验节点全名：必须是非根绝对名称，不能包含 ASCII 空白或中间的空路径段。
-        inline void require_node_fqn(const std::string_view node_fqn) {
+        inline void require_node_fqn(const std::string_view raw_node_fqn) {
+            const auto node_fqn = trim_trailing_slashes(raw_node_fqn);
             if (node_fqn.empty() || node_fqn.front() != '/' || node_fqn == "/" ||
                 node_fqn.find("//") != std::string_view::npos ||
                 node_fqn.find_first_of(" \t\n\r\v\f") != std::string_view::npos) {
@@ -40,14 +49,10 @@ namespace audio_io_interface {
             }
         }
 
-        /// 去掉尾部多余的 '/'，保留开头的绝对路径。
+        /// 校验并返回去掉尾部 '/' 的节点全名。
         [[nodiscard]] inline std::string normalized_node_fqn(const std::string_view node_fqn) {
             require_node_fqn(node_fqn);
-            auto normalized = node_fqn;
-            while (normalized.size() > 1 && normalized.back() == '/') {
-                normalized.remove_suffix(1);
-            }
-            return std::string{normalized};
+            return std::string{trim_trailing_slashes(node_fqn)};
         }
 
         /// 拼接节点全名与 endpoint 后缀。
