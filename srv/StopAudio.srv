@@ -1,0 +1,17 @@
+# 停止播放请求。
+# group 为空且 all 为 true 时停止全部；否则只停止指定焦点组。
+
+# 目标焦点组。
+string group
+
+# 是否停止全部播放。
+bool all
+---
+# 是否执行成功。
+bool success
+
+# 实际停止的播放源数量。
+uint32 stopped
+
+# 可读的结果说明。
+string message

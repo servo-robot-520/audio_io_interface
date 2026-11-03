@@ -1,0 +1,20 @@
+# 播放一段音频片段。
+# goal 与 AudioClip 使用同一套字段；action 只额外提供完成结果与进度反馈。
+
+# 要播放的音频片段。
+audio_io_interface/AudioClip clip
+---
+# 服务端分配的请求标识。
+string request_id
+
+# 是否正常播放完成。
+bool success
+
+# 失败或被取消时的原因。
+string message
+---
+# 当前播放位置，单位秒。
+float32 position
+
+# 播放进度，0.0 到 1.0；总时长未知时为 0。
+float32 progress

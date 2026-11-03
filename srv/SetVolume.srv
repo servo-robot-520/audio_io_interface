@@ -1,0 +1,19 @@
+# 设置 audio_io 的主音量与静音状态。
+
+# 主音量，0.0 到 1.0；超出范围时由服务端夹取。
+float32 volume
+
+# 是否静音。
+bool mute
+---
+# 是否执行成功。
+bool success
+
+# 生效后的主音量。
+float32 volume
+
+# 生效后的静音状态。
+bool mute
+
+# 可读的结果说明。
+string message
