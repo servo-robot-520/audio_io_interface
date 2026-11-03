@@ -100,6 +100,29 @@ uint8[] data
 
 `encoding` 当前支持 `s16le` 与 `f32le`，数据为小端、交错排列。
 
+### 麦克风采集
+
+麦克风数据不单独定义 `AudioCapture` 消息，而是复用 `AudioStream`：
+
+- `audio_io` 在 `~/capture` 发布采集到的 PCM；
+- 设备原生采样率通常为 48 kHz，单声道/立体声由设备决定；
+- `sequence` 用于检测丢包与乱序；
+- 停止采集时发送 `eos=true`；异常断开由 `AudioEvent` 的 `DEVICE_LOST` / `DEVICE_RECOVERED` 表示；
+- 采集健康看 `AudioState.capture_ok` 与 `AudioState.capture_error`；
+- `duck_ear` 订阅该话题后重采样到 16 kHz mono，再跑 log-mel + ONNX。
+
+外部节点通过 helper 获取绝对名称：
+
+```cpp
+const auto capture_topic = audio_io_interface::topic_capture("/robot_a/audio/io");
+```
+
+```python
+from audio_io_interface_msg.ros_msg import topic_capture
+
+print(topic_capture("/robot_a/audio/io"))  # /robot_a/audio/io/capture
+```
+
 ### `AudioState`
 
 播放与采集状态快照。通过 `transient_local` QoS 发布，新订阅者可以立即拿到最新状态。
