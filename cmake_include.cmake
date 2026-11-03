@@ -26,7 +26,7 @@ if (ROS2_WS_SOURCE_BUILD AND TARGET audio_io_interface)
             OR NOT IS_DIRECTORY "${audio_io_interface_SOURCE_DIR}/include")
         message(FATAL_ERROR "The in-tree audio_io_interface source include directory is unavailable.")
     endif ()
-    target_link_libraries(${PROJECT_NAME}
+    target_link_libraries(${PROJECT_NAME} PUBLIC
             ${audio_io_interface_CPP_TYPESUPPORT_TARGET}
     )
     target_include_directories(${PROJECT_NAME} PUBLIC
@@ -36,7 +36,7 @@ else ()
 endif ()
 
 if (ROS2_WS_SOURCE_BUILD)
-    target_link_libraries(${PROJECT_NAME}
+    target_link_libraries(${PROJECT_NAME} PUBLIC
             "-Wl,--no-as-needed"
             ${audio_io_interface_FASTRTPS_CPP_TYPESUPPORT_TARGET}
             ${audio_io_interface_INTROSPECTION_CPP_TYPESUPPORT_TARGET}
