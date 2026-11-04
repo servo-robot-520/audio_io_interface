@@ -24,7 +24,7 @@ namespace audio_io_interface {
 
         /// 判断字符串是否为空或只包含 ASCII 空白。
         [[nodiscard]] inline bool is_empty_or_ascii_whitespace(const std::string_view value) noexcept {
-            return value.empty() || std::all_of(value.begin(), value.end(), is_ascii_whitespace);
+            return value.empty() || std::ranges::all_of(value, is_ascii_whitespace);
         }
 
         /// 默认 audio_io 节点全名。
@@ -40,8 +40,8 @@ namespace audio_io_interface {
 
         /// 校验节点全名：必须是非根绝对名称，不能包含 ASCII 空白或中间的空路径段。
         inline void require_node_fqn(const std::string_view raw_node_fqn) {
-            const auto node_fqn = trim_trailing_slashes(raw_node_fqn);
-            if (node_fqn.empty() || node_fqn.front() != '/' || node_fqn == "/" ||
+            if (const auto node_fqn = trim_trailing_slashes(raw_node_fqn);
+                node_fqn.empty() || node_fqn.front() != '/' || node_fqn == "/" ||
                 node_fqn.find("//") != std::string_view::npos ||
                 node_fqn.find_first_of(" \t\n\r\v\f") != std::string_view::npos) {
                 throw std::invalid_argument(

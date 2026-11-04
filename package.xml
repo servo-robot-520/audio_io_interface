@@ -4,7 +4,7 @@
     <name>audio_io_interface</name>
     <version>0.1.0</version>
     <description>音频 I/O 的 ROS 2 消息、服务、动作与端点名称定义</description>
-    <maintainer email="mdmbct@163.com">greenhand520</maintainer>
+    <maintainer email="ohmdmbct@gmail.com">greenhand520</maintainer>
     <license>GPL-3.0-only</license>
 
     <buildtool_depend>ament_cmake</buildtool_depend>
