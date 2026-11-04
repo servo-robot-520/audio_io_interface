@@ -38,12 +38,14 @@ install(DIRECTORY python/${PROJECT_NAME}_msg/
 if (BUILD_TESTING)
     find_package(ament_cmake_gtest REQUIRED)
     find_package(ament_cmake_pytest REQUIRED)
-    ament_add_gtest(test_ros_msg_helpers test/test_ros_msg_helpers.cpp)
-    target_include_directories(test_ros_msg_helpers PRIVATE include)
-    target_link_libraries(test_ros_msg_helpers
+    ament_add_gtest(test_audio_io_ros_msg_helpers test/test_ros_msg_helpers.cpp)
+    # ros_msg.hpp 使用 std::ranges（C++20），而本包没有全局设置语言标准。
+    target_compile_features(test_audio_io_ros_msg_helpers PRIVATE cxx_std_20)
+    target_include_directories(test_audio_io_ros_msg_helpers PRIVATE include)
+    target_link_libraries(test_audio_io_ros_msg_helpers
             ${PROJECT_NAME}__rosidl_typesupport_cpp
     )
-    ament_add_pytest_test(test_interface_contract test/test_interface_contract.py)
+    ament_add_pytest_test(test_audio_io_interface_contract test/test_interface_contract.py)
 endif ()
 
 ament_package()
