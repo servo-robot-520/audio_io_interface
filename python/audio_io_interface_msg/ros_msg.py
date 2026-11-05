@@ -38,6 +38,17 @@ def _endpoint_name(node_fqn: str, endpoint_suffix: str) -> str:
     return f"{_normalized_node_fqn(node_fqn)}/{endpoint_suffix}"
 
 
+def qualify_node_fqn(node_namespace: str, default_node_fqn: str = DEFAULT_NODE_FQN) -> str:
+    """把默认 audio_io 节点全名限定到当前节点的 namespace。"""
+    base = _normalized_node_fqn(default_node_fqn)
+    namespace = node_namespace.rstrip("/") or "/"
+    if namespace != "/":
+        namespace = _normalized_node_fqn(namespace)
+    if namespace == "/":
+        return base
+    return _normalized_node_fqn(f"{namespace}{base}")
+
+
 def topic_play(node_fqn: str = DEFAULT_NODE_FQN) -> str:
     """返回播放话题的绝对名称。"""
     return _endpoint_name(node_fqn, "play")
@@ -88,6 +99,7 @@ __all__ = [
     "PRIVATE_ACTION_PLAY_CLIP",
     "PRIVATE_SERVICE_STOP",
     "PRIVATE_SERVICE_SET_VOLUME",
+    "qualify_node_fqn",
     "topic_play",
     "topic_stream",
     "topic_capture",

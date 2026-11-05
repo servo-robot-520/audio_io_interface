@@ -36,6 +36,16 @@
 
 `node_fqn` 必须是非根绝对 ROS 名称，不能包含 ASCII 空白或中间的空路径段；尾部多余 `/` 会自动移除。
 
+如果 `audio_io` 与消费者在同一 namespace，不需要手写 namespace，可用
+`qualify_node_fqn(node_namespace)` 把默认 `/audio_io` 限定到当前 namespace：
+
+```cpp
+const auto audio_io_fqn = audio_io_interface::qualify_node_fqn(node->get_namespace());
+const auto capture_topic = audio_io_interface::topic_capture(audio_io_fqn);
+```
+
+`qualify_node_fqn("/robot_a")` → `/robot_a/audio_io`；根 namespace 保持 `/audio_io`。
+
 例如目标节点是 `/robot_a/audio_io` 时：
 
 ```text
@@ -220,11 +230,12 @@ audio_io_interface::ActionPlayClipFeedback;
 from audio_io_interface_msg.ros_msg import (
     PRIVATE_TOPIC_PLAY,
     action_play_clip,
+    qualify_node_fqn,
     service_stop,
     topic_play,
 )
 
-audio_io_fqn = "/robot_a/audio_io"
+audio_io_fqn = qualify_node_fqn("/robot_a")
 print(PRIVATE_TOPIC_PLAY)          # ~/play
 print(topic_play(audio_io_fqn))    # /robot_a/audio_io/play
 print(service_stop(audio_io_fqn))  # /robot_a/audio_io/stop

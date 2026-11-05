@@ -166,6 +166,20 @@ def test_python_endpoint_helpers_reject_invalid_node_fqn() -> None:
             ros_msg.topic_play(invalid)
 
 
+def test_python_qualify_node_fqn() -> None:
+    """Python helper 必须把默认节点名限定到当前 namespace。"""
+    ros_msg = load_ros_msg()
+    assert ros_msg.qualify_node_fqn("/") == "/audio_io"
+    assert ros_msg.qualify_node_fqn("/robot_a") == "/robot_a/audio_io"
+    assert ros_msg.qualify_node_fqn("/robot_a/") == "/robot_a/audio_io"
+    assert ros_msg.qualify_node_fqn("/robot_a", "/audio/io") == "/robot_a/audio/io"
+    assert ros_msg.topic_capture(ros_msg.qualify_node_fqn("/robot_a")) == "/robot_a/audio_io/capture"
+    with pytest.raises(ValueError, match="node_fqn"):
+        ros_msg.qualify_node_fqn("robot_a")
+    with pytest.raises(ValueError, match="node_fqn"):
+        ros_msg.qualify_node_fqn("/robot_a", "/")
+
+
 def test_helper_files_expose_consistent_private_names() -> None:
     """C++ 与 Python helper 必须使用同一套私有 endpoint 名称。"""
     helper_files = (
@@ -184,6 +198,7 @@ def test_helper_files_expose_consistent_private_names() -> None:
         "topic_play",
         "action_play_clip",
         "service_set_volume",
+        "qualify_node_fqn",
     )
     for relative in helper_files:
         content = (PACKAGE_ROOT / relative).read_text(encoding="utf-8")

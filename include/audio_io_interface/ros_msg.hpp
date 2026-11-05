@@ -66,6 +66,34 @@ namespace audio_io_interface {
     /// 默认 audio_io 节点全名。
     inline constexpr std::string_view kDefaultNodeFqn = detail::kDefaultNodeFqn;
 
+    /// 把默认节点全名限定到当前节点的 namespace。
+    ///
+    /// - `qualify_node_fqn("/robot1")` → `/robot1/audio_io`
+    /// - `qualify_node_fqn("/")` → `/audio_io`
+    /// - `qualify_node_fqn("/robot1", "/audio/io")` → `/robot1/audio/io`
+    ///
+    /// 计算出的 FQN 可以直接传给 `topic_capture()`、`topic_event()` 等 helper。
+    /// 根 namespace 与多段默认名称都支持；非法 namespace/默认名抛出
+    /// std::invalid_argument。
+    [[nodiscard]] inline std::string qualify_node_fqn(
+        const std::string_view node_namespace,
+        const std::string_view default_node_fqn = detail::kDefaultNodeFqn) {
+        const auto base = detail::trim_trailing_slashes(default_node_fqn);
+        detail::require_node_fqn(base);
+
+        auto ns = detail::trim_trailing_slashes(node_namespace);
+        if (ns.empty()) {
+            ns = "/";
+        }
+        if (ns != "/") {
+            detail::require_node_fqn(ns);
+        }
+        if (ns == "/") {
+            return std::string{base};
+        }
+        return detail::normalized_node_fqn(std::string{ns} + std::string{base});
+    }
+
     /// endpoint owner（audio_io 节点自身）创建 publisher/subscriber/service/action 时使用的私有名称。
     inline constexpr std::string_view kPrivateTopicPlay = "~/play";
     inline constexpr std::string_view kPrivateTopicStream = "~/stream";
