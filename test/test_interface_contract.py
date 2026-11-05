@@ -150,6 +150,8 @@ def test_python_endpoint_helpers() -> None:
     assert ros_msg.topic_capture() == "/audio_io/capture"
     assert ros_msg.topic_state() == "/audio_io/state"
     assert ros_msg.topic_event() == "/audio_io/event"
+    assert ros_msg.topic_capture(ros_msg.DEFAULT_NODE_FQN, "/robot_a") == "/robot_a/audio_io/capture"
+    assert ros_msg.topic_event(ros_msg.DEFAULT_NODE_FQN, "/robot_a/") == "/robot_a/audio_io/event"
     assert ros_msg.action_play_clip() == "/audio_io/play_clip"
     assert ros_msg.service_stop() == "/audio_io/stop"
     assert ros_msg.service_set_volume() == "/audio_io/set_volume"

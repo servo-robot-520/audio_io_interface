@@ -36,12 +36,12 @@
 
 `node_fqn` 必须是非根绝对 ROS 名称，不能包含 ASCII 空白或中间的空路径段；尾部多余 `/` 会自动移除。
 
-如果 `audio_io` 与消费者在同一 namespace，不需要手写 namespace，可用
-`qualify_node_fqn(node_namespace)` 把默认 `/audio_io` 限定到当前 namespace：
+如果 `audio_io` 与消费者在同一 namespace，不需要手写 namespace。`topic_capture()`、`topic_event()`
+等 helper 都接受可选的第二个 namespace 参数，内部先调用 `qualify_node_fqn()`：
 
 ```cpp
-const auto audio_io_fqn = audio_io_interface::qualify_node_fqn(node->get_namespace());
-const auto capture_topic = audio_io_interface::topic_capture(audio_io_fqn);
+const auto capture_topic = audio_io_interface::topic_capture(
+        audio_io_interface::kDefaultNodeFqn, node->get_namespace());
 ```
 
 `qualify_node_fqn("/robot_a")` → `/robot_a/audio_io`；根 namespace 保持 `/audio_io`。
@@ -228,16 +228,19 @@ audio_io_interface::ActionPlayClipFeedback;
 
 ```python
 from audio_io_interface_msg.ros_msg import (
+    DEFAULT_NODE_FQN,
     PRIVATE_TOPIC_PLAY,
     action_play_clip,
     qualify_node_fqn,
     service_stop,
+    topic_capture,
     topic_play,
 )
 
 audio_io_fqn = qualify_node_fqn("/robot_a")
 print(PRIVATE_TOPIC_PLAY)          # ~/play
 print(topic_play(audio_io_fqn))    # /robot_a/audio_io/play
+print(topic_capture(DEFAULT_NODE_FQN, "/robot_a"))  # /robot_a/audio_io/capture
 print(service_stop(audio_io_fqn))  # /robot_a/audio_io/stop
 print(action_play_clip(audio_io_fqn))
 ```

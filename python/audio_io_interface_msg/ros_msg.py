@@ -33,9 +33,10 @@ def _normalized_node_fqn(node_fqn: str) -> str:
     return trimmed
 
 
-def _endpoint_name(node_fqn: str, endpoint_suffix: str) -> str:
-    """拼接节点全名与 endpoint 后缀。"""
-    return f"{_normalized_node_fqn(node_fqn)}/{endpoint_suffix}"
+def _endpoint_name(node_fqn: str, endpoint_suffix: str,
+                   node_namespace: str = "/") -> str:
+    """限定节点 FQN 后拼接 endpoint 后缀。"""
+    return f"{qualify_node_fqn(node_namespace, node_fqn)}/{endpoint_suffix}"
 
 
 def qualify_node_fqn(node_namespace: str, default_node_fqn: str = DEFAULT_NODE_FQN) -> str:
@@ -49,44 +50,44 @@ def qualify_node_fqn(node_namespace: str, default_node_fqn: str = DEFAULT_NODE_F
     return _normalized_node_fqn(f"{namespace}{base}")
 
 
-def topic_play(node_fqn: str = DEFAULT_NODE_FQN) -> str:
+def topic_play(node_fqn: str = DEFAULT_NODE_FQN, node_namespace: str = "/") -> str:
     """返回播放话题的绝对名称。"""
-    return _endpoint_name(node_fqn, "play")
+    return _endpoint_name(node_fqn, "play", node_namespace)
 
 
-def topic_stream(node_fqn: str = DEFAULT_NODE_FQN) -> str:
+def topic_stream(node_fqn: str = DEFAULT_NODE_FQN, node_namespace: str = "/") -> str:
     """返回 PCM 流话题的绝对名称。"""
-    return _endpoint_name(node_fqn, "stream")
+    return _endpoint_name(node_fqn, "stream", node_namespace)
 
 
-def topic_capture(node_fqn: str = DEFAULT_NODE_FQN) -> str:
+def topic_capture(node_fqn: str = DEFAULT_NODE_FQN, node_namespace: str = "/") -> str:
     """返回麦克风采集话题的绝对名称。"""
-    return _endpoint_name(node_fqn, "capture")
+    return _endpoint_name(node_fqn, "capture", node_namespace)
 
 
-def topic_state(node_fqn: str = DEFAULT_NODE_FQN) -> str:
+def topic_state(node_fqn: str = DEFAULT_NODE_FQN, node_namespace: str = "/") -> str:
     """返回状态话题的绝对名称。"""
-    return _endpoint_name(node_fqn, "state")
+    return _endpoint_name(node_fqn, "state", node_namespace)
 
 
-def topic_event(node_fqn: str = DEFAULT_NODE_FQN) -> str:
+def topic_event(node_fqn: str = DEFAULT_NODE_FQN, node_namespace: str = "/") -> str:
     """返回事件话题的绝对名称。"""
-    return _endpoint_name(node_fqn, "event")
+    return _endpoint_name(node_fqn, "event", node_namespace)
 
 
-def action_play_clip(node_fqn: str = DEFAULT_NODE_FQN) -> str:
+def action_play_clip(node_fqn: str = DEFAULT_NODE_FQN, node_namespace: str = "/") -> str:
     """返回播放动作的绝对名称。"""
-    return _endpoint_name(node_fqn, "play_clip")
+    return _endpoint_name(node_fqn, "play_clip", node_namespace)
 
 
-def service_stop(node_fqn: str = DEFAULT_NODE_FQN) -> str:
+def service_stop(node_fqn: str = DEFAULT_NODE_FQN, node_namespace: str = "/") -> str:
     """返回停止服务的绝对名称。"""
-    return _endpoint_name(node_fqn, "stop")
+    return _endpoint_name(node_fqn, "stop", node_namespace)
 
 
-def service_set_volume(node_fqn: str = DEFAULT_NODE_FQN) -> str:
+def service_set_volume(node_fqn: str = DEFAULT_NODE_FQN, node_namespace: str = "/") -> str:
     """返回音量服务的绝对名称。"""
-    return _endpoint_name(node_fqn, "set_volume")
+    return _endpoint_name(node_fqn, "set_volume", node_namespace)
 
 
 __all__ = [

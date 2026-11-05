@@ -105,39 +105,51 @@ namespace audio_io_interface {
     inline constexpr std::string_view kPrivateServiceSetVolume = "~/set_volume";
 
     /// 外部消费者使用的绝对话题名称。
-    /// @param node_fqn audio_io 节点全名，默认 /audio_io
-    [[nodiscard]] inline std::string topic_play(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
-        return detail::endpoint_name(node_fqn, "play");
+    ///
+    /// @param node_fqn audio_io 在根 namespace 下的节点全名，默认 /audio_io
+    /// @param node_namespace 调用方节点所在 namespace；默认 "/"。
+    ///        同一 namespace 下可直接传 node->get_namespace()。
+    ///        如果 node_fqn 已经是完整 FQN，保持 node_namespace="/" 即可。
+    [[nodiscard]] inline std::string topic_play(const std::string_view node_fqn = detail::kDefaultNodeFqn,
+                                                const std::string_view node_namespace = "/") {
+        return detail::endpoint_name(qualify_node_fqn(node_namespace, node_fqn), "play");
     }
 
-    [[nodiscard]] inline std::string topic_stream(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
-        return detail::endpoint_name(node_fqn, "stream");
+    [[nodiscard]] inline std::string topic_stream(const std::string_view node_fqn = detail::kDefaultNodeFqn,
+                                                  const std::string_view node_namespace = "/") {
+        return detail::endpoint_name(qualify_node_fqn(node_namespace, node_fqn), "stream");
     }
 
-    [[nodiscard]] inline std::string topic_capture(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
-        return detail::endpoint_name(node_fqn, "capture");
+    [[nodiscard]] inline std::string topic_capture(const std::string_view node_fqn = detail::kDefaultNodeFqn,
+                                                   const std::string_view node_namespace = "/") {
+        return detail::endpoint_name(qualify_node_fqn(node_namespace, node_fqn), "capture");
     }
 
-    [[nodiscard]] inline std::string topic_state(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
-        return detail::endpoint_name(node_fqn, "state");
+    [[nodiscard]] inline std::string topic_state(const std::string_view node_fqn = detail::kDefaultNodeFqn,
+                                                 const std::string_view node_namespace = "/") {
+        return detail::endpoint_name(qualify_node_fqn(node_namespace, node_fqn), "state");
     }
 
-    [[nodiscard]] inline std::string topic_event(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
-        return detail::endpoint_name(node_fqn, "event");
+    [[nodiscard]] inline std::string topic_event(const std::string_view node_fqn = detail::kDefaultNodeFqn,
+                                                 const std::string_view node_namespace = "/") {
+        return detail::endpoint_name(qualify_node_fqn(node_namespace, node_fqn), "event");
     }
 
     /// 外部消费者使用的绝对动作名称。
-    [[nodiscard]] inline std::string action_play_clip(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
-        return detail::endpoint_name(node_fqn, "play_clip");
+    [[nodiscard]] inline std::string action_play_clip(const std::string_view node_fqn = detail::kDefaultNodeFqn,
+                                                      const std::string_view node_namespace = "/") {
+        return detail::endpoint_name(qualify_node_fqn(node_namespace, node_fqn), "play_clip");
     }
 
     /// 外部消费者使用的绝对服务名称。
-    [[nodiscard]] inline std::string service_stop(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
-        return detail::endpoint_name(node_fqn, "stop");
+    [[nodiscard]] inline std::string service_stop(const std::string_view node_fqn = detail::kDefaultNodeFqn,
+                                                  const std::string_view node_namespace = "/") {
+        return detail::endpoint_name(qualify_node_fqn(node_namespace, node_fqn), "stop");
     }
 
-    [[nodiscard]] inline std::string service_set_volume(const std::string_view node_fqn = detail::kDefaultNodeFqn) {
-        return detail::endpoint_name(node_fqn, "set_volume");
+    [[nodiscard]] inline std::string service_set_volume(const std::string_view node_fqn = detail::kDefaultNodeFqn,
+                                                        const std::string_view node_namespace = "/") {
+        return detail::endpoint_name(qualify_node_fqn(node_namespace, node_fqn), "set_volume");
     }
 
     // 与生成消息/服务/动作名称一致的简洁类型别名。

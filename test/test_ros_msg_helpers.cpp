@@ -38,6 +38,12 @@ TEST(RosMsgHelpers, QualifiesDefaultNodeWithNamespace) {
     EXPECT_EQ(audio_io_interface::qualify_node_fqn("/robot_a", "/audio/io"),
               "/robot_a/audio/io");
     EXPECT_EQ(audio_io_interface::topic_capture(
+                      audio_io_interface::kDefaultNodeFqn, "/robot_a"),
+              "/robot_a/audio_io/capture");
+    EXPECT_EQ(audio_io_interface::topic_event(
+                      audio_io_interface::kDefaultNodeFqn, "/robot_a/"),
+              "/robot_a/audio_io/event");
+    EXPECT_EQ(audio_io_interface::topic_capture(
                       audio_io_interface::qualify_node_fqn("/robot_a")),
               "/robot_a/audio_io/capture");
 }
