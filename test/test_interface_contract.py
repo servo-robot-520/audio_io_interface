@@ -171,15 +171,17 @@ def test_python_endpoint_helpers_reject_invalid_node_fqn() -> None:
 def test_python_qualify_node_fqn() -> None:
     """Python helper 必须把默认节点名限定到当前 namespace。"""
     ros_msg = load_ros_msg()
-    assert ros_msg.qualify_node_fqn("/") == "/audio_io"
-    assert ros_msg.qualify_node_fqn("/robot_a") == "/robot_a/audio_io"
-    assert ros_msg.qualify_node_fqn("/robot_a/") == "/robot_a/audio_io"
-    assert ros_msg.qualify_node_fqn("/robot_a", "/audio/io") == "/robot_a/audio/io"
-    assert ros_msg.topic_capture(ros_msg.qualify_node_fqn("/robot_a")) == "/robot_a/audio_io/capture"
+    assert ros_msg.qualify_node_fqn() == "/audio_io"
+    assert ros_msg.qualify_node_fqn(ros_msg.DEFAULT_NODE_FQN, "/robot_a") == "/robot_a/audio_io"
+    assert ros_msg.qualify_node_fqn(ros_msg.DEFAULT_NODE_FQN, "/robot_a/") == "/robot_a/audio_io"
+    assert ros_msg.qualify_node_fqn("/audio/io", "/robot_a") == "/robot_a/audio/io"
+    assert ros_msg.topic_capture(
+        ros_msg.qualify_node_fqn(ros_msg.DEFAULT_NODE_FQN, "/robot_a")
+    ) == "/robot_a/audio_io/capture"
     with pytest.raises(ValueError, match="node_fqn"):
         ros_msg.qualify_node_fqn("robot_a")
     with pytest.raises(ValueError, match="node_fqn"):
-        ros_msg.qualify_node_fqn("/robot_a", "/")
+        ros_msg.qualify_node_fqn(ros_msg.DEFAULT_NODE_FQN, "robot_a")
 
 
 def test_helper_files_expose_consistent_private_names() -> None:

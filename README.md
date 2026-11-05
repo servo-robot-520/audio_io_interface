@@ -44,7 +44,7 @@ const auto capture_topic = audio_io_interface::topic_capture(
         audio_io_interface::kDefaultNodeFqn, node->get_namespace());
 ```
 
-`qualify_node_fqn("/robot_a")` → `/robot_a/audio_io`；根 namespace 保持 `/audio_io`。
+`qualify_node_fqn(kDefaultNodeFqn, "/robot_a")` → `/robot_a/audio_io`；根 namespace 保持 `/audio_io`。
 
 例如目标节点是 `/robot_a/audio_io` 时：
 
@@ -237,7 +237,7 @@ from audio_io_interface_msg.ros_msg import (
     topic_play,
 )
 
-audio_io_fqn = qualify_node_fqn("/robot_a")
+audio_io_fqn = qualify_node_fqn(DEFAULT_NODE_FQN, "/robot_a")
 print(PRIVATE_TOPIC_PLAY)          # ~/play
 print(topic_play(audio_io_fqn))    # /robot_a/audio_io/play
 print(topic_capture(DEFAULT_NODE_FQN, "/robot_a"))  # /robot_a/audio_io/capture

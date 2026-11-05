@@ -32,10 +32,14 @@ TEST(RosMsgHelpers, BuildsDefaultAbsoluteEndpointNames) {
 }
 
 TEST(RosMsgHelpers, QualifiesDefaultNodeWithNamespace) {
-    EXPECT_EQ(audio_io_interface::qualify_node_fqn("/"), "/audio_io");
-    EXPECT_EQ(audio_io_interface::qualify_node_fqn("/robot_a"), "/robot_a/audio_io");
-    EXPECT_EQ(audio_io_interface::qualify_node_fqn("/robot_a/"), "/robot_a/audio_io");
-    EXPECT_EQ(audio_io_interface::qualify_node_fqn("/robot_a", "/audio/io"),
+    EXPECT_EQ(audio_io_interface::qualify_node_fqn(), "/audio_io");
+    EXPECT_EQ(audio_io_interface::qualify_node_fqn(
+                      audio_io_interface::kDefaultNodeFqn, "/robot_a"),
+              "/robot_a/audio_io");
+    EXPECT_EQ(audio_io_interface::qualify_node_fqn(
+                      audio_io_interface::kDefaultNodeFqn, "/robot_a/"),
+              "/robot_a/audio_io");
+    EXPECT_EQ(audio_io_interface::qualify_node_fqn("/audio/io", "/robot_a"),
               "/robot_a/audio/io");
     EXPECT_EQ(audio_io_interface::topic_capture(
                       audio_io_interface::kDefaultNodeFqn, "/robot_a"),
@@ -44,18 +48,20 @@ TEST(RosMsgHelpers, QualifiesDefaultNodeWithNamespace) {
                       audio_io_interface::kDefaultNodeFqn, "/robot_a/"),
               "/robot_a/audio_io/event");
     EXPECT_EQ(audio_io_interface::topic_capture(
-                      audio_io_interface::qualify_node_fqn("/robot_a")),
+                      audio_io_interface::qualify_node_fqn(
+                              audio_io_interface::kDefaultNodeFqn, "/robot_a")),
               "/robot_a/audio_io/capture");
 }
 
 TEST(RosMsgHelpers, RejectsInvalidNamespaceOrDefaultNode) {
     EXPECT_THROW(static_cast<void>(audio_io_interface::qualify_node_fqn("robot_a")),
                  std::invalid_argument);
-    EXPECT_THROW(static_cast<void>(audio_io_interface::qualify_node_fqn("/robot_a", "")),
+    EXPECT_THROW(static_cast<void>(audio_io_interface::qualify_node_fqn(
+                         audio_io_interface::kDefaultNodeFqn, "robot_a")),
                  std::invalid_argument);
-    EXPECT_THROW(static_cast<void>(audio_io_interface::qualify_node_fqn("/robot_a", "/")),
+    EXPECT_THROW(static_cast<void>(audio_io_interface::qualify_node_fqn("/", "/robot_a")),
                  std::invalid_argument);
-    EXPECT_THROW(static_cast<void>(audio_io_interface::qualify_node_fqn("/robot_a", "audio_io")),
+    EXPECT_THROW(static_cast<void>(audio_io_interface::qualify_node_fqn("audio_io", "/robot_a")),
                  std::invalid_argument);
 }
 
